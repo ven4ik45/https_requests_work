@@ -1,17 +1,31 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+unicodedata = 'utf-8'
+import requests
+import json
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+url = 'https://akabab.github.io/superhero-api/api'
+all_heroes = '/all.json'
+need_heroes = ['Hulk', 'Captain America', 'Thanos']
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+data = requests.get(url+all_heroes).content
+cont = json.loads(data)
 
+
+def get_heroes(content, need_heroes):
+    heroes_dict = {}
+    for n in content:
+        for h in need_heroes:
+            if h == n['name']:
+                heroes_dict[n['name']] = n['powerstats']['intelligence']
+    return heroes_dict
+
+
+def return_smartest_hero(heroes):
+    for k, v in heroes.items():
+        if v == max(heroes.values()):
+            return k
+
+
+heroes = get_heroes(cont, need_heroes)
+smartest_hero = return_smartest_hero(heroes)
+print(f'Cамый умный из трех супергероев (Hulk, Captain America, Thanos): {smartest_hero}')
